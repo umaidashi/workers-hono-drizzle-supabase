@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { showRoutes } from "hono/dev";
 import postgres from "postgres";
 import { post } from "./db/schema";
+import { posts } from "./routes";
 
 export type Env = {
 	DATABASE_URL: string;
@@ -11,7 +12,7 @@ export type Env = {
 const app = new Hono<{
 	Bindings: Env;
 	Variables: { db: PostgresJsDatabase };
-}>().basePath("/api");
+}>();
 
 app.all("*", async (c, next) => {
 	const client = postgres(c.env.DATABASE_URL, {
@@ -23,11 +24,13 @@ app.all("*", async (c, next) => {
 	await next();
 });
 
-app.get("/posts", async (c) => {
+app.get("api/posts", async (c) => {
 	const res = await c.var.db.select().from(post);
 
 	return c.json(res);
 });
+
+app.route("/", posts);
 
 showRoutes(app);
 export default app;
