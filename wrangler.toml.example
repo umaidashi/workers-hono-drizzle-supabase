@@ -1,0 +1,7 @@
+name = "hono-drizzle-supabase"
+compatibility_date = "2024-02-12"
+main = "src/index.ts"
+node_compat = true
+
+[vars]
+DATABASE_URL=""
